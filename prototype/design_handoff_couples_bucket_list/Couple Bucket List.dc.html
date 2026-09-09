@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: oklch(95% 0.014 280); }
+    a { color: oklch(58% 0.18 280); }
+    a:hover { color: oklch(48% 0.18 280); }
+  </style>
+</helmet>
+
+<div style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:48px 24px; box-sizing:border-box; font-family:'Work Sans', sans-serif;">
+  <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+    <div style="height:100%; display:flex; flex-direction:column; background:var(--bg); position:relative; --accent:{{ accentColor }}; --accent-dark:{{ accentColorDark }}; --bg:{{ bgColor }};">
+
+      <!-- AUTH SCREEN -->
+      <sc-if value="{{ isAuth }}" hint-placeholder-val="{{ true }}">
+        <div style="height:100%; display:flex; flex-direction:column; padding:88px 28px 40px; box-sizing:border-box; text-align:center;">
+          <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:24px;">
+            <div style="width:64px; height:64px; border-radius:20px; background:var(--accent); margin:0 auto; display:flex; align-items:center; justify-content:center;">
+              <div style="width:26px; height:26px; border-radius:50% 50% 50% 0; background:#fff; transform:rotate(45deg);"></div>
+            </div>
+            <div>
+              <div style="font-family:'Lora', serif; font-weight:600; font-size:28px; color:oklch(22% 0.02 40); line-height:1.2;">Welcome</div>
+              <div style="font-size:15px; color:oklch(48% 0.02 40); margin-top:8px; line-height:1.5;">Sign in to start building your shared bucket list.</div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <button onClick="{{ continueAuth }}" style="display:flex; align-items:center; justify-content:center; gap:10px; width:100%; padding:14px; border:1px solid oklch(88% 0.01 50); border-radius:14px; background:#fff; font-size:15px; font-weight:600; font-family:'Work Sans', sans-serif; color:oklch(22% 0.02 40);">
+                <div style="width:18px; height:18px; border-radius:50%; background:conic-gradient(oklch(65% 0.19 40) 0 25%, oklch(60% 0.17 140) 25% 50%, oklch(60% 0.19 250) 50% 75%, oklch(70% 0.18 90) 75% 100%);"></div>
+                Continue with Google
+              </button>
+              <button onClick="{{ continueAuth }}" style="display:flex; align-items:center; justify-content:center; gap:10px; width:100%; padding:14px; border:none; border-radius:14px; background:oklch(15% 0 0); color:#fff; font-size:15px; font-weight:600; font-family:'Work Sans', sans-serif;">
+                <div style="width:14px; height:14px; border-radius:50% 50% 50% 0; background:#fff; transform:rotate(45deg);"></div>
+                Continue with Apple
+              </button>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div style="flex:1; height:1px; background:oklch(88% 0.01 50);"></div>
+              <div style="font-size:12px; color:oklch(60% 0.02 40);">{{ authModeLabel }}</div>
+              <div style="flex:1; height:1px; background:oklch(88% 0.01 50);"></div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px; text-align:left;">
+              <div>
+                <div style="font-size:12px; font-weight:600; color:oklch(48% 0.02 40); letter-spacing:0.02em; margin-bottom:6px;">EMAIL</div>
+                <input value="{{ authEmail }}" onChange="{{ onAuthEmailChange }}" placeholder="you@email.com" style="width:100%; box-sizing:border-box; border:1px solid oklch(88% 0.01 50); border-radius:12px; padding:13px 14px; font-size:16px; font-family:'Work Sans', sans-serif; background:#fff; color:oklch(22% 0.02 40); outline:none;" />
+              </div>
+              <div>
+                <div style="font-size:12px; font-weight:600; color:oklch(48% 0.02 40); letter-spacing:0.02em; margin-bottom:6px;">PASSWORD</div>
+                <input type="password" value="{{ authPassword }}" onChange="{{ onAuthPasswordChange }}" placeholder="••••••••" style="width:100%; box-sizing:border-box; border:1px solid oklch(88% 0.01 50); border-radius:12px; padding:13px 14px; font-size:16px; font-family:'Work Sans', sans-serif; background:#fff; color:oklch(22% 0.02 40); outline:none;" />
+              </div>
+            </div>
+          </div>
+          <button onClick="{{ continueAuth }}" style="width:100%; padding:16px; border:none; border-radius:16px; background:var(--accent); color:#fff; font-size:16px; font-weight:600; font-family:'Work Sans', sans-serif;">Continue</button>
+          <div onClick="{{ toggleAuthMode }}" style="margin-top:16px; font-size:13px; color:oklch(48% 0.02 40); cursor:pointer;">{{ authSwitchLabel }}</div>
+        </div>
+      </sc-if>
+
+      <!-- SETUP SCREEN -->
+      <sc-if value="{{ isSetup }}" hint-placeholder-val="{{ false }}">
+        <div style="height:100%; display:flex; flex-direction:column; padding:78px 28px 40px; box-sizing:border-box; text-align:center;">
+          <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:22px;">
+            <div style="width:64px; height:64px; border-radius:20px; background:var(--accent); margin:0 auto; display:flex; align-items:center; justify-content:center;">
+              <div style="width:26px; height:26px; border-radius:50% 50% 50% 0; background:#fff; transform:rotate(45deg);"></div>
+            </div>
+            <div>
+              <div style="font-family:'Lora', serif; font-weight:600; font-size:30px; color:oklch(22% 0.02 40); line-height:1.2;">Our Bucket List</div>
+              <div style="font-size:15px; color:oklch(48% 0.02 40); margin-top:10px; line-height:1.5;">Rate the things you'd like to do together — from 1 to 5. Compare answers once you've both filled yours in.</div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:14px; margin-top:8px; text-align:left;">
+              <div>
+                <div style="font-size:12px; font-weight:600; color:oklch(48% 0.02 40); letter-spacing:0.02em; margin-bottom:6px;">YOUR NAME</div>
+                <input value="{{ youName }}" onChange="{{ onYouNameChange }}" style="width:100%; box-sizing:border-box; border:1px solid oklch(88% 0.01 50); border-radius:12px; padding:13px 14px; font-size:16px; font-family:'Work Sans', sans-serif; background:#fff; color:oklch(22% 0.02 40); outline:none;" />
+              </div>
+              <div>
+                <div style="font-size:12px; font-weight:600; color:oklch(48% 0.02 40); letter-spacing:0.02em; margin-bottom:6px;">PARTNER'S NAME</div>
+                <input value="{{ partnerName }}" onChange="{{ onPartnerNameChange }}" style="width:100%; box-sizing:border-box; border:1px solid oklch(88% 0.01 50); border-radius:12px; padding:13px 14px; font-size:16px; font-family:'Work Sans', sans-serif; background:#fff; color:oklch(22% 0.02 40); outline:none;" />
+              </div>
+              <div>
+                <div style="font-size:12px; font-weight:600; color:oklch(48% 0.02 40); letter-spacing:0.02em; margin-bottom:6px;">ADD PARTNER BY EMAIL OR PHONE</div>
+                <div style="display:flex; gap:8px;">
+                  <input value="{{ partnerContact }}" onChange="{{ onPartnerContactChange }}" placeholder="email or phone number" style="flex:1; box-sizing:border-box; border:1px solid oklch(88% 0.01 50); border-radius:12px; padding:13px 14px; font-size:15px; font-family:'Work Sans', sans-serif; background:#fff; color:oklch(22% 0.02 40); outline:none;" />
+                  <button onClick="{{ sendPartnerInvite }}" style="padding:0 18px; border:none; border-radius:12px; background:var(--accent); color:#fff; font-size:14px; font-weight:600; font-family:'Work Sans', sans-serif;">Invite</button>
+                </div>
+                <sc-if value="{{ showInviteSent }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:12px; color:var(--accent); margin-top:8px; font-weight:600;">Invite sent to {{ partnerContact }}</div>
+                </sc-if>
+              </div>
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <div>
+                  <div style="font-size:14px; font-weight:600; color:oklch(22% 0.02 40);">Sexuality entries</div>
+                  <div style="font-size:12px; color:oklch(48% 0.02 40); margin-top:2px;">Show an intimate category with sensitive topics</div>
+                </div>
+                <div onClick="{{ toggleSexuality }}" style="width:44px; height:26px; border-radius:13px; background:{{ sexualityToggleBg }}; flex-shrink:0; cursor:pointer; position:relative;">
+                  <div style="position:absolute; top:2px; left:{{ sexualityToggleLeft }}; width:22px; height:22px; border-radius:50%; background:#fff; transition:left 0.15s;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button onClick="{{ finishSetup }}" style="width:100%; padding:16px; border:none; border-radius:16px; background:var(--accent); color:#fff; font-size:16px; font-weight:600; font-family:'Work Sans', sans-serif;">Start rating together</button>
+        </div>
+      </sc-if>
+
+      <!-- MAIN SCREENS (categories / progress / results) -->
+      <sc-if value="{{ isMainScreen }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:58px 20px 14px; box-sizing:border-box;">
+          <div style="font-family:'Lora', serif; font-weight:600; font-size:26px; color:oklch(22% 0.02 40);">{{ mainTitle }}</div>
+          <sc-if value="{{ isCategoriesScreen }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size:14px; color:oklch(48% 0.02 40); margin-top:4px;">{{ youName }} &amp; {{ partnerName }}</div>
+          </sc-if>
+        </div>
+
+        <div style="flex:1; overflow:auto; padding:0 20px 12px; box-sizing:border-box;">
+
+          <!-- CATEGORIES LIST -->
+          <sc-if value="{{ isCategoriesScreen }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <sc-for list="{{ categoriesView }}" as="cat" hint-placeholder-count="5">
+                <div onClick="{{ cat.onOpen }}" style="display:flex; align-items:center; gap:14px; background:#fff; border-radius:18px; padding:16px; cursor:pointer;">
+                  <div style="width:44px; height:44px; border-radius:13px; background:{{ cat.color }}; flex-shrink:0; display:flex; align-items:center; justify-content:center; color:#fff; font-family:'Lora', serif; font-weight:600; font-size:18px;">{{ cat.initial }}</div>
+                  <div style="flex:1; min-width:0;">
+                    <div style="font-size:16px; font-weight:600; color:oklch(22% 0.02 40);">{{ cat.name }}</div>
+                    <div style="font-size:13px; color:oklch(48% 0.02 40); margin-top:2px;">{{ cat.countLabel }}</div>
+                  </div>
+                  <sc-if value="{{ cat.canDelete }}" hint-placeholder-val="{{ false }}">
+                    <div onClick="{{ cat.onDelete }}" style="width:34px; height:34px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+                      <div style="position:relative; width:15px; height:15px;">
+                        <div style="position:absolute; top:6px; left:0; width:15px; height:2px; background:oklch(60% 0.16 25); transform:rotate(45deg);"></div>
+                        <div style="position:absolute; top:6px; left:0; width:15px; height:2px; background:oklch(60% 0.16 25); transform:rotate(-45deg);"></div>
+                      </div>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ cat.hasEntriesForDeleteDisplay }}" hint-placeholder-val="{{ true }}">
+                    <div style="width:34px; height:34px; border-radius:50%; flex-shrink:0; background:conic-gradient(var(--accent) {{ cat.progressDeg }}deg, oklch(92% 0.01 50) 0deg); display:flex; align-items:center; justify-content:center;">
+                      <div style="width:26px; height:26px; border-radius:50%; background:#fff; font-size:10px; font-weight:700; color:oklch(48% 0.02 40); display:flex; align-items:center; justify-content:center;">{{ cat.percentLabel }}</div>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <!-- PROGRESS SCREEN -->
+          <sc-if value="{{ isProgressScreen }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#fff; border-radius:18px; padding:20px; display:flex; flex-direction:column; align-items:center; gap:10px; margin-bottom:16px;">
+              <div style="width:104px; height:104px; border-radius:50%; background:conic-gradient(var(--accent) {{ overallProgressDeg }}deg, oklch(92% 0.01 50) 0deg); display:flex; align-items:center; justify-content:center;">
+                <div style="width:84px; height:84px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; flex-direction:column;">
+                  <div style="font-family:'Lora', serif; font-size:24px; font-weight:600; color:oklch(22% 0.02 40);">{{ overallProgressPercentLabel }}</div>
+                  <div style="font-size:11px; color:oklch(48% 0.02 40);">rated</div>
+                </div>
+              </div>
+              <div style="font-size:13px; color:oklch(48% 0.02 40); text-align:center;">{{ overallRatedCount }} of {{ overallTotalCount }} items rated by {{ youName }}</div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <sc-for list="{{ categoriesView }}" as="cat" hint-placeholder-count="5">
+                <div onClick="{{ cat.onOpen }}" style="background:#fff; border-radius:16px; padding:14px 16px; cursor:pointer;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <div style="font-size:14px; font-weight:600; color:oklch(22% 0.02 40);">{{ cat.name }}</div>
+                    <div style="font-size:12px; color:oklch(48% 0.02 40);">{{ cat.ratedCount }}/{{ cat.total }}</div>
+                  </div>
+                  <div style="height:8px; border-radius:4px; background:oklch(92% 0.01 50); overflow:hidden;">
+                    <div style="height:100%; border-radius:4px; background:{{ cat.color }}; width:{{ cat.percentLabel }};"></div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <!-- RESULTS SCREEN -->
+          <sc-if value="{{ isResultsScreen }}" hint-placeholder-val="{{ false }}">
+            <div style="background:var(--accent); border-radius:18px; padding:22px; display:flex; flex-direction:column; align-items:center; gap:6px; margin-bottom:16px; text-align:center;">
+              <div style="font-family:'Lora', serif; font-size:40px; font-weight:700; color:#fff;">{{ overallMatchLabel }}</div>
+              <div style="font-size:13px; color:rgba(255,255,255,0.85); max-width:260px;">match on {{ matchedCount }} shared answers</div>
+            </div>
+
+            <sc-if value="{{ hasTopMatches }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:13px; font-weight:600; color:oklch(48% 0.02 40); letter-spacing:0.02em; margin-bottom:10px;">THINGS YOU BOTH CAN'T WAIT FOR</div>
+              <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;">
+                <sc-for list="{{ topMatches }}" as="m" hint-placeholder-count="3">
+                  <div style="display:flex; align-items:center; gap:12px; background:#fff; border-radius:14px; padding:13px 14px;">
+                    <div style="width:8px; height:8px; border-radius:50%; background:{{ m.color }}; flex-shrink:0;"></div>
+                    <div style="flex:1; min-width:0;">
+                      <div style="font-size:14px; font-weight:600; color:oklch(22% 0.02 40);">{{ m.name }}</div>
+                      <div style="font-size:12px; color:oklch(48% 0.02 40); margin-top:1px;">{{ m.categoryName }}</div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ hasNoTopMatches }}" hint-placeholder-val="{{ false }}">
+              <div style="background:#fff; border-radius:14px; padding:18px; text-align:center; font-size:13px; color:oklch(48% 0.02 40); margin-bottom:20px;">Rate more items together to surface your shared favorites.</div>
+            </sc-if>
+
+            <div style="font-size:13px; font-weight:600; color:oklch(48% 0.02 40); letter-spacing:0.02em; margin-bottom:10px;">MATCH BY CATEGORY</div>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <sc-for list="{{ categoryMatches }}" as="cm" hint-placeholder-count="5">
+                <div style="background:#fff; border-radius:16px; padding:14px 16px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <div style="font-size:14px; font-weight:600; color:oklch(22% 0.02 40);">{{ cm.name }}</div>
+                    <div style="font-size:12px; color:oklch(48% 0.02 40);">{{ cm.label }}</div>
+                  </div>
+                  <div style="height:8px; border-radius:4px; background:oklch(92% 0.01 50); overflow:hidden;">
+                    <div style="height:100%; border-radius:4px; background:{{ cm.color }}; width:{{ cm.barWidth }};"></div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <!-- ACCOUNT SCREEN -->
+          <sc-if value="{{ isAccountScreen }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#fff; border-radius:18px; padding:22px; display:flex; flex-direction:column; align-items:center; gap:10px; margin-bottom:20px;">
+              <div style="width:64px; height:64px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; color:#fff; font-family:'Lora', serif; font-weight:600; font-size:24px;">{{ profileInitial }}</div>
+              <div style="font-size:17px; font-weight:600; color:oklch(22% 0.02 40);">{{ youName }}</div>
+              <div style="font-size:13px; color:oklch(48% 0.02 40);">{{ profileEmailLabel }}</div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:28px;">
+              <div>
+                <div style="font-size:12px; font-weight:600; color:oklch(48% 0.02 40); letter-spacing:0.02em; margin-bottom:6px;">DISPLAY NAME</div>
+                <input value="{{ youName }}" onChange="{{ onYouNameChange }}" style="width:100%; box-sizing:border-box; border:1px solid oklch(88% 0.01 50); border-radius:12px; padding:13px 14px; font-size:16px; font-family:'Work Sans', sans-serif; background:#fff; color:oklch(22% 0.02 40); outline:none;" />
+              </div>
+              <div>
+                <div style="font-size:12px; font-weight:600; color:oklch(48% 0.02 40); letter-spacing:0.02em; margin-bottom:6px;">PARTNER'S NAME</div>
+                <input value="{{ partnerName }}" onChange="{{ onPartnerNameChange }}" style="width:100%; box-sizing:border-box; border:1px solid oklch(88% 0.01 50); border-radius:12px; padding:13px 14px; font-size:16px; font-family:'Work Sans', sans-serif; background:#fff; color:oklch(22% 0.02 40); outline:none;" />
+              </div>
+              <div>
+                <div style="font-size:12px; font-weight:600; color:oklch(48% 0.02 40); letter-spacing:0.02em; margin-bottom:6px;">THEME</div>
+                <div style="display:flex; gap:10px;">
+                  <sc-for list="{{ themesView }}" as="th" hint-placeholder-count="4">
+                    <div onClick="{{ th.onClick }}" style="display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer;">
+                      <div style="width:36px; height:36px; border-radius:50%; background:{{ th.swatch }}; box-sizing:border-box; box-shadow:{{ th.ringShadow }};"></div>
+                      <div style="font-size:11px; color:oklch(48% 0.02 40);">{{ th.label }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <div>
+                  <div style="font-size:14px; font-weight:600; color:oklch(22% 0.02 40);">Sexuality entries</div>
+                  <div style="font-size:12px; color:oklch(48% 0.02 40); margin-top:2px;">Show an intimate category with sensitive topics</div>
+                </div>
+                <div onClick="{{ toggleSexuality }}" style="width:44px; height:26px; border-radius:13px; background:{{ sexualityToggleBg }}; flex-shrink:0; cursor:pointer; position:relative;">
+                  <div style="position:absolute; top:2px; left:{{ sexualityToggleLeft }}; width:22px; height:22px; border-radius:50%; background:#fff; transition:left 0.15s;"></div>
+                </div>
+              </div>
+            </div>
+            <button onClick="{{ openDeleteConfirm }}" style="width:100%; padding:15px; border:1px solid oklch(70% 0.18 25); border-radius:14px; background:#fff; color:oklch(55% 0.2 25); font-size:15px; font-weight:600; font-family:'Work Sans', sans-serif;">Delete Account</button>
+          </sc-if>
+        </div>
+
+        <!-- BOTTOM NAV -->
+        <div style="display:flex; justify-content:space-around; border-top:1px solid oklch(90% 0.01 50); background:#fff; padding:10px 12px calc(10px + 20px); box-sizing:border-box;">
+          <sc-for list="{{ tabs }}" as="tab" hint-placeholder-count="4">
+            <div onClick="{{ tab.onClick }}" style="display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; padding:4px 10px; color:{{ tab.textColor }};">
+              <sc-if value="{{ tab.isAccount }}" hint-placeholder-val="{{ false }}">
+                <svg width="18" height="18" viewBox="0 0 16 16"><circle cx="8" cy="5" r="3" fill="currentColor"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6" fill="currentColor"/></svg>
+              </sc-if>
+              <sc-if value="{{ tab.isCategories }}" hint-placeholder-val="{{ false }}">
+                <svg width="18" height="18" viewBox="0 0 16 16"><path d="M3 5h10l-1 8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1L3 5z" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M3 5c0-1.5 2-2 5-2s5 .5 5 2" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+              </sc-if>
+              <sc-if value="{{ tab.isProgress }}" hint-placeholder-val="{{ false }}">
+                <svg width="18" height="18" viewBox="0 0 16 16"><rect x="1" y="6" width="14" height="4" rx="2" fill="none" stroke="currentColor" stroke-width="1.3"/><rect x="1" y="6" width="9" height="4" rx="2" fill="currentColor"/></svg>
+              </sc-if>
+              <sc-if value="{{ tab.isResults }}" hint-placeholder-val="{{ false }}">
+                <svg width="18" height="18" viewBox="0 0 16 16"><path d="M8 14s-6-3.7-6-8.2C2 3 4 1.5 6 2.2c1 .3 1.7 1.1 2 1.9.3-.8 1-1.6 2-1.9 2-.7 4 .8 4 3.6 0 4.5-6 8.2-6 8.2z" fill="currentColor"/></svg>
+              </sc-if>
+              <div style="font-size:11px; font-weight:600;">{{ tab.label }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ showFab }}" hint-placeholder-val="{{ false }}">
+          <div onClick="{{ openAddModal }}" style="position:absolute; right:20px; bottom:96px; width:54px; height:54px; border-radius:50%; background:var(--accent); box-shadow:0 8px 18px oklch(0% 0 0 / 0.25); display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:5;">
+            <div style="position:relative; width:18px; height:18px;">
+              <div style="position:absolute; top:8px; left:0; width:18px; height:2px; background:#fff;"></div>
+              <div style="position:absolute; top:0; left:8px; width:2px; height:18px; background:#fff;"></div>
+            </div>
+          </div>
+        </sc-if>
+      </sc-if>
+
+      <!-- ITEMS LIST SCREEN -->
+      <sc-if value="{{ isItemsScreen }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1; display:flex; flex-direction:column; overflow:hidden;">
+        <div style="padding:58px 20px 14px; box-sizing:border-box; display:flex; align-items:center; gap:10px;">
+          <div onClick="{{ back }}" style="width:34px; height:34px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+            <div style="width:8px; height:8px; border-left:2px solid oklch(22% 0.02 40); border-bottom:2px solid oklch(22% 0.02 40); transform:rotate(45deg) translate(1px,-1px);"></div>
+          </div>
+          <div style="font-family:'Lora', serif; font-weight:600; font-size:22px; color:oklch(22% 0.02 40); min-width:0; flex:1;">{{ activeCategoryName }}</div>
+        </div>
+        <div style="flex:1; overflow:auto; padding:0 20px 24px; box-sizing:border-box; display:flex; flex-direction:column; gap:10px;">
+          <sc-for list="{{ itemsView }}" as="it" hint-placeholder-count="5">
+            <div style="background:#fff; border-radius:16px; padding:14px 16px;">
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                <div onClick="{{ it.onOpen }}" style="flex:1; min-width:0; font-size:15px; font-weight:500; color:oklch(22% 0.02 40); cursor:pointer;">{{ it.name }}</div>
+                <div onClick="{{ it.onDelete }}" style="width:26px; height:26px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+                  <div style="position:relative; width:13px; height:13px;">
+                    <div style="position:absolute; top:5.5px; left:0; width:13px; height:2px; background:oklch(70% 0.02 40); transform:rotate(45deg);"></div>
+                    <div style="position:absolute; top:5.5px; left:0; width:13px; height:2px; background:oklch(70% 0.02 40); transform:rotate(-45deg);"></div>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex; gap:7px;">
+                <sc-for list="{{ it.pills }}" as="pill" hint-placeholder-count="5">
+                  <div onClick="{{ pill.onClick }}" style="flex:1; height:34px; border-radius:9px; background:{{ pill.bg }}; color:{{ pill.textColor }}; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; cursor:pointer;">{{ pill.value }}</div>
+                </sc-for>
+              </div>
+              <sc-if value="{{ it.showMatchNote }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size:12px; color:var(--accent); margin-top:8px; font-weight:600;">{{ it.matchNote }}</div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+        </div>
+
+        <!-- BOTTOM NAV (items screen) -->
+        <div style="display:flex; justify-content:space-around; border-top:1px solid oklch(90% 0.01 50); background:#fff; padding:10px 12px calc(10px + 20px); box-sizing:border-box;">
+          <sc-for list="{{ tabs }}" as="tab" hint-placeholder-count="4">
+            <div onClick="{{ tab.onClick }}" style="display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; padding:4px 10px; color:{{ tab.textColor }};">
+              <sc-if value="{{ tab.isAccount }}" hint-placeholder-val="{{ false }}">
+                <svg width="18" height="18" viewBox="0 0 16 16"><circle cx="8" cy="5" r="3" fill="currentColor"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6" fill="currentColor"/></svg>
+              </sc-if>
+              <sc-if value="{{ tab.isCategories }}" hint-placeholder-val="{{ false }}">
+                <svg width="18" height="18" viewBox="0 0 16 16"><path d="M3 5h10l-1 8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1L3 5z" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M3 5c0-1.5 2-2 5-2s5 .5 5 2" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+              </sc-if>
+              <sc-if value="{{ tab.isProgress }}" hint-placeholder-val="{{ false }}">
+                <svg width="18" height="18" viewBox="0 0 16 16"><rect x="1" y="6" width="14" height="4" rx="2" fill="none" stroke="currentColor" stroke-width="1.3"/><rect x="1" y="6" width="9" height="4" rx="2" fill="currentColor"/></svg>
+              </sc-if>
+              <sc-if value="{{ tab.isResults }}" hint-placeholder-val="{{ false }}">
+                <svg width="18" height="18" viewBox="0 0 16 16"><path d="M8 14s-6-3.7-6-8.2C2 3 4 1.5 6 2.2c1 .3 1.7 1.1 2 1.9.3-.8 1-1.6 2-1.9 2-.7 4 .8 4 3.6 0 4.5-6 8.2-6 8.2z" fill="currentColor"/></svg>
+              </sc-if>
+              <div style="font-size:11px; font-weight:600;">{{ tab.label }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div onClick="{{ openAddModal }}" style="position:absolute; right:20px; bottom:96px; width:54px; height:54px; border-radius:50%; background:var(--accent); box-shadow:0 8px 18px oklch(0% 0 0 / 0.25); display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:5;">
+          <div style="position:relative; width:18px; height:18px;">
+            <div style="position:absolute; top:8px; left:0; width:18px; height:2px; background:#fff;"></div>
+            <div style="position:absolute; top:0; left:8px; width:2px; height:18px; background:#fff;"></div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ITEM DETAIL SCREEN -->
+      <sc-if value="{{ isDetailScreen }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:58px 20px 14px; box-sizing:border-box; display:flex; align-items:center; gap:10px;">
+          <div onClick="{{ back }}" style="width:34px; height:34px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+            <div style="width:8px; height:8px; border-left:2px solid oklch(22% 0.02 40); border-bottom:2px solid oklch(22% 0.02 40); transform:rotate(45deg) translate(1px,-1px);"></div>
+          </div>
+          <div style="font-size:13px; font-weight:600; color:oklch(48% 0.02 40); letter-spacing:0.02em;">{{ activeCategoryName }}</div>
+        </div>
+        <div style="flex:1; overflow:auto; padding:20px 24px 24px; box-sizing:border-box;">
+          <div style="font-family:'Lora', serif; font-weight:600; font-size:24px; color:oklch(22% 0.02 40); line-height:1.3; margin-bottom:28px;">{{ activeItemName }}</div>
+
+          <div style="font-size:12px; font-weight:600; color:oklch(48% 0.02 40); letter-spacing:0.02em; margin-bottom:10px;">HOW MUCH DO YOU WANT THIS?</div>
+          <div style="display:flex; gap:8px; margin-bottom:8px;">
+            <sc-for list="{{ detailPills }}" as="pill" hint-placeholder-count="5">
+              <div onClick="{{ pill.onClick }}" style="flex:1; height:52px; border-radius:12px; background:{{ pill.bg }}; color:{{ pill.textColor }}; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; cursor:pointer;">{{ pill.value }}</div>
+            </sc-for>
+          </div>
+          <div style="font-size:13px; color:oklch(48% 0.02 40); min-height:18px; margin-bottom:24px;">{{ detailYourLabel }}</div>
+
+          <sc-if value="{{ hasDetailPartnerValue }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#fff; border-radius:16px; padding:16px; display:flex; align-items:center; gap:12px;">
+              <div style="width:38px; height:38px; border-radius:50%; background:{{ detailPartnerColor }}; flex-shrink:0; color:{{ detailPartnerTextColor }}; display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:700;">{{ detailPartnerValue }}</div>
+              <div>
+                <div style="font-size:13px; font-weight:600; color:oklch(22% 0.02 40);">{{ partnerName }} rated this {{ detailPartnerValue }} — {{ detailPartnerLabel }}</div>
+                <div style="font-size:12px; color:var(--accent); margin-top:2px; font-weight:600;">{{ detailMatchNote }}</div>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ hasNoDetailPartnerValue }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#fff; border-radius:16px; padding:16px; font-size:13px; color:oklch(48% 0.02 40); text-align:center;">{{ partnerName }} hasn't rated this yet.</div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <!-- ADD MODAL -->
+      <sc-if value="{{ showAddModal }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ closeAddModal }}" style="position:absolute; inset:0; background:oklch(0% 0 0 / 0.4); display:flex; align-items:flex-end; z-index:10;">
+          <div onClick="{{ stopPropagation }}" style="background:#fff; width:100%; border-radius:24px 24px 0 0; padding:24px 24px 32px; box-sizing:border-box;">
+            <div style="font-family:'Lora', serif; font-weight:600; font-size:19px; color:oklch(22% 0.02 40); margin-bottom:16px;">{{ addModalTitle }}</div>
+            <div style="position:relative; margin-bottom:16px;">
+              <input value="{{ addModalText }}" onChange="{{ onAddModalTextChange }}" onFocus="{{ onAddModalFocus }}" placeholder="{{ addModalPlaceholder }}" autoComplete="off" style="width:100%; box-sizing:border-box; border:1px solid oklch(88% 0.01 50); border-radius:12px; padding:13px 44px 13px 14px; font-size:16px; font-family:'Work Sans', sans-serif; color:oklch(22% 0.02 40); outline:none;" />
+              <div onClick="{{ toggleAddModalDropdown }}" style="position:absolute; right:6px; top:6px; width:34px; height:34px; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+                <div style="width:9px; height:9px; border-right:2px solid oklch(48% 0.02 40); border-bottom:2px solid oklch(48% 0.02 40); transform:{{ chevronRotation }} rotate(45deg); transition:transform 0.15s;"></div>
+              </div>
+              <sc-if value="{{ showDropdownList }}" hint-placeholder-val="{{ false }}">
+                <div style="position:absolute; top:calc(100% + 6px); left:0; right:0; background:#fff; border:1px solid oklch(90% 0.01 50); border-radius:12px; overflow:hidden; box-shadow:0 8px 20px oklch(0% 0 0 / 0.12); z-index:20;">
+                  <sc-for list="{{ suggestions }}" as="sug" hint-placeholder-count="3">
+                    <div onClick="{{ sug.onClick }}" style="padding:12px 14px; font-size:14px; color:oklch(30% 0.02 40); cursor:pointer; border-bottom:1px solid oklch(94% 0.01 50);">{{ sug.name }}</div>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+
+            <div style="display:flex; gap:10px;">
+              <button onClick="{{ closeAddModal }}" style="flex:1; padding:14px; border:none; border-radius:14px; background:oklch(94% 0.01 50); color:oklch(40% 0.02 40); font-size:15px; font-weight:600; font-family:'Work Sans', sans-serif;">Cancel</button>
+              <button onClick="{{ submitAdd }}" style="flex:1; padding:14px; border:none; border-radius:14px; background:var(--accent); color:#fff; font-size:15px; font-weight:600; font-family:'Work Sans', sans-serif;">Add</button>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- DELETE ACCOUNT CONFIRM -->
+      <sc-if value="{{ showDeleteConfirm }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ closeDeleteConfirm }}" style="position:absolute; inset:0; background:oklch(0% 0 0 / 0.4); display:flex; align-items:flex-end; z-index:10;">
+          <div onClick="{{ stopPropagation }}" style="background:#fff; width:100%; border-radius:24px 24px 0 0; padding:24px 24px 32px; box-sizing:border-box; text-align:center;">
+            <div style="font-family:'Lora', serif; font-weight:600; font-size:19px; color:oklch(22% 0.02 40); margin-bottom:8px;">Delete your account?</div>
+            <div style="font-size:14px; color:oklch(48% 0.02 40); margin-bottom:20px; line-height:1.5;">This removes your profile and ratings. This can't be undone.</div>
+            <div style="display:flex; gap:10px;">
+              <button onClick="{{ closeDeleteConfirm }}" style="flex:1; padding:14px; border:none; border-radius:14px; background:oklch(94% 0.01 50); color:oklch(40% 0.02 40); font-size:15px; font-weight:600; font-family:'Work Sans', sans-serif;">Cancel</button>
+              <button onClick="{{ confirmDeleteAccount }}" style="flex:1; padding:14px; border:none; border-radius:14px; background:oklch(55% 0.2 25); color:#fff; font-size:15px; font-weight:600; font-family:'Work Sans', sans-serif;">Delete</button>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+  </x-import>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:500,&quot;height&quot;:940}}">
+const CATEGORIES = [
+  { id: 'date', name: 'Date Nights', hue: 25, items: [
+    { id: 'd1', name: 'Cook a fancy dinner together' },
+    { id: 'd2', name: 'Take a dance class' },
+    { id: 'd3', name: 'Go to a drive-in movie' },
+    { id: 'd4', name: 'Have a picnic at sunset' },
+    { id: 'd5', name: 'Try a new restaurant every month' },
+  ]},
+  { id: 'travel', name: 'Travel & Adventures', hue: 210, items: [
+    { id: 't1', name: 'Road trip with no destination' },
+    { id: 't2', name: 'Visit Japan together' },
+    { id: 't3', name: 'Go camping under the stars' },
+    { id: 't4', name: "Take a couples' spa retreat" },
+    { id: 't5', name: 'Backpack through Europe' },
+  ]},
+  { id: 'home', name: 'Home & Cozy', hue: 150, items: [
+    { id: 'h1', name: 'Build a blanket fort movie night' },
+    { id: 'h2', name: 'Start a garden together' },
+    { id: 'h3', name: 'Cook a recipe from scratch' },
+    { id: 'h4', name: 'Have a no-phones Sunday' },
+    { id: 'h5', name: 'Redecorate a room together' },
+  ]},
+  { id: 'connect', name: 'Intimacy & Connection', hue: 300, items: [
+    { id: 'c1', name: 'Give each other massages' },
+    { id: 'c2', name: 'Keep a shared couples journal' },
+    { id: 'c3', name: 'Take a photography walk' },
+    { id: 'c4', name: 'Recreate our first date' },
+    { id: 'c5', name: 'Slow dance in the kitchen' },
+  ]},
+  { id: 'big', name: 'Big Moments', hue: 70, items: [
+    { id: 'b1', name: 'Get a pet together' },
+    { id: 'b2', name: 'Learn a language together' },
+    { id: 'b3', name: 'Write letters to open in 10 years' },
+    { id: 'b4', name: 'Renew our vows someday' },
+    { id: 'b5', name: 'Go skydiving' },
+  ]},
+];
+
+const GROUP_SUGGESTIONS = ['Date Nights', 'Travel & Adventures', 'Home & Cozy', 'Intimacy & Connection', 'Big Moments', 'Fitness & Wellness', 'Food & Cooking', 'Family & Friends', 'Creative Projects', 'Career & Growth'];
+const ITEM_SUGGESTIONS = {
+  date: ['Try a new restaurant every month', 'Have a picnic at sunset', 'Go to a comedy show', 'Wine tasting evening', 'Karaoke night'],
+  travel: ['Visit Japan together', 'Go camping under the stars', 'Backpack through Europe', 'See the northern lights', 'Take a cross-country train'],
+  home: ['Build a blanket fort movie night', 'Start a garden together', 'Redecorate a room together', 'Learn to bake bread', 'Host a game night'],
+  connect: ['Give each other massages', 'Keep a shared couples journal', 'Recreate our first date', 'Write love letters', 'Take a couples photoshoot'],
+  big: ['Get a pet together', 'Learn a language together', 'Go skydiving', 'Run a 5k together', 'Take a pottery class'],
+};
+
+const RATING_LABELS = { 1: 'Not for us', 2: 'Curious about it', 3: 'Okay with it', 4: 'Really want it', 5: "Can't wait!!" };
+const RATING_BG = ['oklch(90% 0.012 40)', 'oklch(85% 0.05 32)', 'oklch(76% 0.09 28)', 'oklch(66% 0.13 25)', 'oklch(56% 0.16 20)'];
+
+function ratingBg(v) { return v ? RATING_BG[v - 1] : 'oklch(94% 0.01 50)'; }
+function ratingText(v) { return v >= 4 ? '#fff' : 'oklch(30% 0.02 40)'; }
+function catColor(hue) { return `oklch(58% 0.13 ${hue})`; }
+
+const THEMES = [
+  { key: 'purple', label: 'Purple', hue: 280 },
+  { key: 'rose', label: 'Rose', hue: 25 },
+  { key: 'teal', label: 'Teal', hue: 190 },
+  { key: 'sunset', label: 'Sunset', hue: 50 },
+];
+
+class Component extends DCLogic {
+  state = {
+    screen: 'auth',
+    authEmail: '',
+    authPassword: '',
+    authMode: 'login',
+    partnerContact: '',
+    inviteSent: false,
+    theme: 'purple',
+    sexualityEnabled: false,
+    activeCategory: null,
+    activeItem: null,
+    youName: 'Silvio',
+    partnerName: 'Sheyla',
+    categories: CATEGORIES.map((c) => ({ ...c, items: [...c.items] })),
+    showAddModal: false,
+    addModalMode: null,
+    addModalText: '',
+    nextIdCounter: 1,
+    ratings: {
+      partner: { d1: 5, d2: 4, d3: 3, d4: 5, d5: 2, t1: 3, t2: 5, t3: 4, t4: 5, t5: 2, h1: 5, h2: 3, h3: 2, h4: 4, h5: 3, c1: 5, c2: 4, c3: 3, c4: 5, c5: 5, b1: 4, b2: 2, b3: 5, b4: 5, b5: 1 },
+      you: { d1: 5, d2: 4, d4: 5, t2: 5, t3: 4, h1: 4, h4: 3, c1: 5, c5: 5, b1: 3 },
+    },
+  };
+
+  continueAuth = () => this.setState({ screen: 'setup' });
+  onAuthEmailChange = (e) => this.setState({ authEmail: e.target.value });
+  onAuthPasswordChange = (e) => this.setState({ authPassword: e.target.value });
+  toggleAuthMode = () => this.setState((s) => ({ authMode: s.authMode === 'login' ? 'signup' : 'login' }));
+  onPartnerContactChange = (e) => this.setState({ partnerContact: e.target.value, inviteSent: false });
+  sendPartnerInvite = () => {
+    if (!this.state.partnerContact.trim()) return;
+    this.setState({ inviteSent: true });
+  };
+  setTheme = (key) => this.setState({ theme: key });
+  toggleSexuality = () => {
+    this.setState((s) => {
+      const enabled = !s.sexualityEnabled;
+      let categories = s.categories;
+      if (enabled && !categories.some((c) => c.id === 'sexuality')) {
+        categories = [...categories, {
+          id: 'sexuality', name: 'Sexuality', hue: 330, items: [
+            { id: 'sx1', name: 'Try a new intimate activity together' },
+            { id: 'sx2', name: 'Talk openly about desires' },
+            { id: 'sx3', name: 'Plan an intimate evening' },
+          ],
+        }];
+      } else if (!enabled) {
+        categories = categories.filter((c) => c.id !== 'sexuality');
+      }
+      return { sexualityEnabled: enabled, categories };
+    });
+  };
+  finishSetup = () => this.setState({ screen: 'categories' });
+  openDeleteConfirm = () => this.setState({ showDeleteConfirm: true });
+  closeDeleteConfirm = () => this.setState({ showDeleteConfirm: false });
+  confirmDeleteAccount = () => this.setState({ showDeleteConfirm: false, screen: 'auth' });
+  onYouNameChange = (e) => this.setState({ youName: e.target.value });
+  onPartnerNameChange = (e) => this.setState({ partnerName: e.target.value });
+  setScreen = (screen) => this.setState({ screen, activeCategory: null, activeItem: null });
+  openCategory = (catId) => this.setState({ screen: 'items', activeCategory: catId });
+  openItem = (itemId) => this.setState({ screen: 'detail', activeItem: itemId });
+  back = () => {
+    this.setState((s) => {
+      if (s.screen === 'detail') return { screen: 'items' };
+      return { screen: 'categories', activeCategory: null };
+    });
+  };
+  rate = (itemId, value) => {
+    this.setState((s) => ({ ratings: { ...s.ratings, you: { ...s.ratings.you, [itemId]: value } } }));
+  };
+
+  stopPropagation = (e) => e.stopPropagation();
+  deleteGroup = (catId, e) => {
+    e.stopPropagation();
+    this.setState((s) => ({ categories: s.categories.filter((c) => c.id !== catId) }));
+  };
+  deleteItem = (catId, itemId, e) => {
+    e.stopPropagation();
+    this.setState((s) => ({ categories: s.categories.map((c) => c.id === catId ? { ...c, items: c.items.filter((i) => i.id !== itemId) } : c) }));
+  };
+  openAddModal = () => this.setState({ showAddModal: true, addModalText: '', addModalDropdownOpen: false });
+  closeAddModal = () => this.setState({ showAddModal: false, addModalText: '', addModalDropdownOpen: false });
+  onAddModalTextChange = (e) => this.setState({ addModalText: e.target.value, addModalDropdownOpen: true });
+  onAddModalFocus = () => this.setState({ addModalDropdownOpen: true });
+  toggleAddModalDropdown = (e) => { e.stopPropagation(); this.setState((s) => ({ addModalDropdownOpen: !s.addModalDropdownOpen })); };
+  selectSuggestion = (name) => this.setState({ addModalText: name, addModalDropdownOpen: false });
+  submitAdd = () => {
+    const name = this.state.addModalText.trim();
+    if (!name) return;
+    if (this.state.screen === 'items' && this.state.activeCategory) {
+      const newId = 'x' + this.state.nextIdCounter;
+      this.setState((s) => ({
+        categories: s.categories.map((c) => c.id === s.activeCategory ? { ...c, items: [...c.items, { id: newId, name }] } : c),
+        showAddModal: false,
+        addModalText: '',
+        nextIdCounter: s.nextIdCounter + 1,
+      }));
+    } else {
+      const newId = 'grp' + this.state.nextIdCounter;
+      const hues = [25, 210, 150, 300, 70, 190, 340, 110];
+      this.setState((s) => ({
+        categories: [...s.categories, { id: newId, name, hue: hues[s.categories.length % hues.length], items: [] }],
+        showAddModal: false,
+        addModalText: '',
+        nextIdCounter: s.nextIdCounter + 1,
+      }));
+    }
+  };
+
+  findItem(itemId) {
+    for (const cat of this.state.categories) {
+      const item = cat.items.find((i) => i.id === itemId);
+      if (item) return { item, cat };
+    }
+    return null;
+  }
+
+  renderVals() {
+    const s = this.state;
+    const you = s.ratings.you;
+    const partner = s.ratings.partner;
+
+    const activeTheme = THEMES.find((t) => t.key === s.theme) || THEMES[0];
+    const accentColor = `oklch(58% 0.18 ${activeTheme.hue})`;
+    const accentColorDark = `oklch(48% 0.18 ${activeTheme.hue})`;
+    const bgColor = `oklch(95% 0.014 ${activeTheme.hue})`;
+    const themesView = THEMES.map((t) => ({
+      key: t.key,
+      label: t.label,
+      swatch: `oklch(58% 0.18 ${t.hue})`,
+      isActive: t.key === s.theme,
+      ringShadow: t.key === s.theme ? `0 0 0 2px #fff, 0 0 0 4px oklch(58% 0.18 ${t.hue})` : 'none',
+      onClick: () => this.setTheme(t.key),
+    }));
+
+    const categoriesView = s.categories.map((cat) => {
+      const ratedCount = cat.items.filter((i) => you[i.id] != null).length;
+      const pct = cat.items.length ? Math.round((ratedCount / cat.items.length) * 100) : 0;
+      return {
+        id: cat.id,
+        name: cat.name,
+        total: cat.items.length,
+        ratedCount,
+        color: catColor(cat.hue),
+        initial: cat.name[0],
+        progressDeg: cat.items.length ? Math.round((ratedCount / cat.items.length) * 360) : 0,
+        percentLabel: pct + '%',
+        countLabel: cat.items.length ? `${ratedCount} of ${cat.items.length} rated` : 'No entries yet',
+        canDelete: cat.items.length === 0,
+        hasEntriesForDeleteDisplay: cat.items.length > 0,
+        onDelete: (e) => this.deleteGroup(cat.id, e),
+        onOpen: () => this.openCategory(cat.id),
+      };
+    });
+
+    const overallTotalCount = s.categories.reduce((n, c) => n + c.items.length, 0);
+    const overallRatedCount = Object.keys(you).length;
+    const overallPct = overallTotalCount ? Math.round((overallRatedCount / overallTotalCount) * 100) : 0;
+
+    // items screen
+    let itemsView = [];
+    let activeCategoryName = '';
+    if (s.activeCategory) {
+      const cat = s.categories.find((c) => c.id === s.activeCategory);
+      activeCategoryName = cat ? cat.name : '';
+      if (cat) {
+        itemsView = cat.items.map((it) => {
+          const yourValue = you[it.id];
+          const partnerValue = partner[it.id];
+          const bothRated = yourValue != null && partnerValue != null;
+          const isMatch = bothRated && yourValue >= 4 && partnerValue >= 4;
+          return {
+            id: it.id,
+            name: it.name,
+            onOpen: () => this.openItem(it.id),
+            onDelete: (e) => this.deleteItem(cat.id, it.id, e),
+            showMatchNote: isMatch,
+            matchNote: isMatch ? `You both want this — ${s.partnerName} rated it ${partnerValue}` : '',
+            pills: [1, 2, 3, 4, 5].map((v) => ({
+              value: v,
+              bg: yourValue === v ? ratingBg(v) : 'oklch(94% 0.01 50)',
+              textColor: yourValue === v ? ratingText(v) : 'oklch(48% 0.02 40)',
+              onClick: () => this.rate(it.id, v),
+            })),
+          };
+        });
+      }
+    }
+    if (s.screen === 'detail' && s.activeItem) {
+      const found = this.findItem(s.activeItem);
+      if (found) activeCategoryName = found.cat.name;
+    }
+
+    // detail screen
+    let activeItemName = '';
+    let detailPills = [];
+    let detailYourLabel = '';
+    let hasDetailPartnerValue = false;
+    let hasNoDetailPartnerValue = false;
+    let detailPartnerValue = '';
+    let detailPartnerLabel = '';
+    let detailPartnerColor = 'oklch(94% 0.01 50)';
+    let detailPartnerTextColor = 'oklch(48% 0.02 40)';
+    let detailMatchNote = '';
+    if (s.activeItem) {
+      const found = this.findItem(s.activeItem);
+      if (found) {
+        activeItemName = found.item.name;
+        const yourValue = you[found.item.id];
+        const partnerValue = partner[found.item.id];
+        detailPills = [1, 2, 3, 4, 5].map((v) => ({
+          value: v,
+          bg: yourValue === v ? ratingBg(v) : 'oklch(94% 0.01 50)',
+          textColor: yourValue === v ? ratingText(v) : 'oklch(48% 0.02 40)',
+          onClick: () => this.rate(found.item.id, v),
+        }));
+        detailYourLabel = yourValue ? `You: ${RATING_LABELS[yourValue]}` : 'Tap a number to rate this';
+        if (partnerValue != null) {
+          hasDetailPartnerValue = true;
+          detailPartnerValue = partnerValue;
+          detailPartnerLabel = RATING_LABELS[partnerValue];
+          detailPartnerColor = ratingBg(partnerValue);
+          detailPartnerTextColor = ratingText(partnerValue);
+          if (yourValue != null) {
+            const diff = Math.abs(yourValue - partnerValue);
+            detailMatchNote = diff === 0 ? 'Perfect match!' : diff === 1 ? 'Close match' : diff >= 3 ? "You see this differently — worth a chat" : 'Some overlap';
+          }
+        } else {
+          hasNoDetailPartnerValue = true;
+        }
+      }
+    }
+
+    // results
+    const matchedIds = Object.keys(you).filter((id) => partner[id] != null);
+    const matchScores = matchedIds.map((id) => 1 - Math.abs(you[id] - partner[id]) / 4);
+    const overallMatchPct = matchScores.length ? Math.round((matchScores.reduce((a, b) => a + b, 0) / matchScores.length) * 100) : null;
+
+    const topMatches = [];
+    s.categories.forEach((cat) => {
+      cat.items.forEach((it) => {
+        const yv = you[it.id];
+        const pv = partner[it.id];
+        if (yv != null && pv != null && yv >= 4 && pv >= 4) {
+          topMatches.push({ name: it.name, categoryName: cat.name, color: catColor(cat.hue), sum: yv + pv });
+        }
+      });
+    });
+    topMatches.sort((a, b) => b.sum - a.sum);
+    const topMatchesSliced = topMatches.slice(0, 6);
+
+    const categoryMatches = s.categories.map((cat) => {
+      const ids = cat.items.map((i) => i.id).filter((id) => you[id] != null && partner[id] != null);
+      if (!ids.length) return { name: cat.name, label: 'Not rated yet', barWidth: '0%', color: catColor(cat.hue) };
+      const scores = ids.map((id) => 1 - Math.abs(you[id] - partner[id]) / 4);
+      const pct = Math.round((scores.reduce((a, b) => a + b, 0) / scores.length) * 100);
+      return { name: cat.name, label: pct + '% match', barWidth: pct + '%', color: catColor(cat.hue) };
+    });
+
+    let suggestions = [];
+    const query = (s.addModalText || '').trim().toLowerCase();
+    if (s.screen === 'items' && s.activeCategory) {
+      const cat = s.categories.find((c) => c.id === s.activeCategory);
+      const existingNames = cat ? cat.items.map((i) => i.name.toLowerCase()) : [];
+      const pool = ITEM_SUGGESTIONS[s.activeCategory] || [];
+      suggestions = pool.filter((n) => !existingNames.includes(n.toLowerCase()) && n.toLowerCase().includes(query)).slice(0, 5);
+    } else {
+      const existingNames = s.categories.map((c) => c.name.toLowerCase());
+      suggestions = GROUP_SUGGESTIONS.filter((n) => !existingNames.includes(n.toLowerCase()) && n.toLowerCase().includes(query)).slice(0, 5);
+    }
+
+    const tabDef = [
+      { key: 'account', label: 'Account' },
+      { key: 'categories', label: 'Bucket List' },
+      { key: 'progress', label: 'Progress' },
+      { key: 'results', label: 'Match' },
+    ];
+    const tabs = tabDef.map((t) => ({
+      key: t.key,
+      label: t.label,
+      onClick: () => this.setScreen(t.key),
+      isAccount: t.key === 'account',
+      isCategories: t.key === 'categories',
+      isProgress: t.key === 'progress',
+      isResults: t.key === 'results',
+      textColor: s.screen === t.key ? accentColor : 'oklch(65% 0.02 40)',
+    }));
+
+    const mainTitles = { categories: 'Our Bucket List', progress: 'Progress', results: 'Your Match', account: 'Account' };
+
+    return {
+      accentColor,
+      accentColorDark,
+      bgColor,
+      themesView,
+      toggleSexuality: this.toggleSexuality,
+      sexualityToggleBg: s.sexualityEnabled ? accentColor : 'oklch(88% 0.01 50)',
+      sexualityToggleLeft: s.sexualityEnabled ? '20px' : '2px',
+      isAuth: s.screen === 'auth',
+      authEmail: s.authEmail,
+      onAuthEmailChange: this.onAuthEmailChange,
+      authPassword: s.authPassword,
+      onAuthPasswordChange: this.onAuthPasswordChange,
+      continueAuth: this.continueAuth,
+      toggleAuthMode: this.toggleAuthMode,
+      authModeLabel: s.authMode === 'login' ? 'or sign in with email' : 'or sign up with email',
+      authSwitchLabel: s.authMode === 'login' ? "Don't have an account? Sign up" : 'Already have an account? Sign in',
+      partnerContact: s.partnerContact,
+      onPartnerContactChange: this.onPartnerContactChange,
+      sendPartnerInvite: this.sendPartnerInvite,
+      showInviteSent: s.inviteSent,
+      isSetup: s.screen === 'setup',
+      isMainScreen: s.screen === 'categories' || s.screen === 'progress' || s.screen === 'results' || s.screen === 'account',
+      isCategoriesScreen: s.screen === 'categories',
+      isProgressScreen: s.screen === 'progress',
+      isResultsScreen: s.screen === 'results',
+      isAccountScreen: s.screen === 'account',
+      isItemsScreen: s.screen === 'items',
+      isDetailScreen: s.screen === 'detail',
+      mainTitle: mainTitles[s.screen] || '',
+      youName: s.youName,
+      partnerName: s.partnerName,
+      onYouNameChange: this.onYouNameChange,
+      onPartnerNameChange: this.onPartnerNameChange,
+      finishSetup: this.finishSetup,
+      profileInitial: s.youName ? s.youName[0].toUpperCase() : '?',
+      profileEmailLabel: `Rating with ${s.partnerName}`,
+      showDeleteConfirm: !!s.showDeleteConfirm,
+      openDeleteConfirm: this.openDeleteConfirm,
+      closeDeleteConfirm: this.closeDeleteConfirm,
+      confirmDeleteAccount: this.confirmDeleteAccount,
+      back: this.back,
+      categoriesView,
+      overallTotalCount,
+      overallRatedCount,
+      overallProgressDeg: overallTotalCount ? Math.round((overallRatedCount / overallTotalCount) * 360) : 0,
+      overallProgressPercentLabel: overallPct + '%',
+      itemsView,
+      activeCategoryName,
+      activeItemName,
+      detailPills,
+      detailYourLabel,
+      hasDetailPartnerValue,
+      hasNoDetailPartnerValue,
+      detailPartnerValue,
+      detailPartnerLabel,
+      detailPartnerColor,
+      detailPartnerTextColor,
+      detailMatchNote,
+      overallMatchLabel: overallMatchPct != null ? overallMatchPct + '% match' : 'No matches yet',
+      matchedCount: matchedIds.length,
+      hasTopMatches: topMatchesSliced.length > 0,
+      hasNoTopMatches: topMatchesSliced.length === 0,
+      topMatches: topMatchesSliced,
+      categoryMatches,
+      tabs,
+      showFab: s.screen === 'categories',
+      openAddModal: this.openAddModal,
+      closeAddModal: this.closeAddModal,
+      showAddModal: s.showAddModal,
+      addModalTitle: s.screen === 'items' ? 'Add an entry' : 'Add a new group',
+      addModalPlaceholder: s.screen === 'items' ? 'e.g. Go stargazing' : 'e.g. Adventures',
+      addModalText: s.addModalText,
+      onAddModalTextChange: this.onAddModalTextChange,
+      submitAdd: this.submitAdd,
+      stopPropagation: this.stopPropagation,
+      suggestions: suggestions.map((name) => ({ name, onClick: () => this.selectSuggestion(name) })),
+      hasSuggestions: suggestions.length > 0,
+      dropdownOpen: !!s.addModalDropdownOpen,
+      showDropdownList: !!s.addModalDropdownOpen && suggestions.length > 0,
+      onAddModalFocus: this.onAddModalFocus,
+      toggleAddModalDropdown: this.toggleAddModalDropdown,
+      chevronRotation: s.addModalDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+    };
+  }
+}
+
+</script>
+</body>
+</html>
